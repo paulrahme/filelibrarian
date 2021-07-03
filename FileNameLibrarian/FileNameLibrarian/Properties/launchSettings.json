@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "FileNameLibrarian": {
+      "commandName": "Project",
+      "commandLineArgs": "sort c:\\roms *.zip"
+    }
+  }
+}
