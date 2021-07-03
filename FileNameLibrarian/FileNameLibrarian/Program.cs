@@ -52,6 +52,7 @@ namespace FileNameLibrarian
 			_handlers.Add(new CommandHandler_List());
 			_handlers.Add(new CommandHandler_Quit());
 			_handlers.Add(new CommandHandler_Sort());
+			_handlers.Add(new CommandHandler_Status());
 		}
 
 		static void FindAllFiles()
