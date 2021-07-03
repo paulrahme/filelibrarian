@@ -31,6 +31,8 @@ namespace FileNameLibrarian
 
 			AddHandlers();
 			FindAllFiles();
+			HandleCommand(new[] { "status" });
+			Console.WriteLine("\nEnter command, or type \"help\" to see a list of commands.");
 
 			while (true)
 			{
