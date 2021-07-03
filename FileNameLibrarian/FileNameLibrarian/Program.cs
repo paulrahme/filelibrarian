@@ -7,79 +7,97 @@ namespace FileNameLibrarian
 {
 	class Program
 	{
-		static List<FileTaskHandler> _handlers = new List<FileTaskHandler>();
+		static string _baseDir, _filePattern;
+		static List<DirectoryInfo> _allFiles = new();
+		static List<CommandHandler> _handlers = new();
 
 		/// <summary> App's main entry + exit point </summary>
 		/// <param name="args"> Command-line arguments </param>
 		static void Main(string[] args)
 		{
-			AddHandlers();
-
 			// Print title + version
 			var version = ((AssemblyFileVersionAttribute)Attribute.GetCustomAttribute(
 								Assembly.GetExecutingAssembly(),
 								typeof(AssemblyFileVersionAttribute), false)).Version;
 			Console.WriteLine($"File Name Librarian v{version}\n");
 
-			// Check for valid arguments
-			if (args.Length < 3)
-			{
-				string appName = AppDomain.CurrentDomain.FriendlyName;
-				if (PrintHelpIfNecessary(args[0], appName))
-				{
-					Environment.Exit(0);
-				}
-				else
-				{
-					Console.WriteLine($"Usage: {appName} <operation> <base-dir> <file-name-pattern>\neg. {appName} sort . *.txt\n\nType '{appName} help' for more detailed help.");
-					Environment.Exit(1);
-				}
-			}
+			Console.Write("Base Directory? [.] ");
+			_baseDir = Console.ReadLine();
+			if (string.IsNullOrEmpty(_baseDir))
+				_baseDir = Directory.GetCurrentDirectory();
 
-			// Parse arguments
-			string command = args[0];
-			string baseDir = Path.GetFullPath(args[1]);
-			string pattern = args[2];
-			Console.WriteLine($"--- Command = {command}, Base dir = '{baseDir}', file name pattern = '{pattern}' ---");
+			Console.Write("File pattern? [*.*] ");
+			_filePattern = Console.ReadLine();
 
-			var handler = _handlers.Find(x => x.Command == command);
-			if (handler == null)
+			AddHandlers();
+			FindAllFiles();
+
+			while (true)
 			{
-				Console.WriteLine($"Invalid command '{command}'.");
-				Environment.Exit(2);
+				// Read next command
+				Console.Write("? ");
+				string[] commands = Console.ReadLine().Split(' ');
+				if (commands.Length == 0)
+					break;
+
+				// Find handler for command
+				HandleCommand(commands);
 			}
-			handler.ProcessTask(baseDir, pattern);
 		}
 
 		/// <summary> Adds handlers for various file tasks </summary>
 		static void AddHandlers()
 		{
-			_handlers.Add(new FileTaskHandler_Sort());
+			_handlers.Add(new CommandHandler_Exit());
+			_handlers.Add(new CommandHandler_List());
+			_handlers.Add(new CommandHandler_Quit());
+			_handlers.Add(new CommandHandler_Sort());
 		}
 
-		/// <summary> Checks the argument and prints the help page if required </summary>
-		/// <param name="appName"> App name to use in help page </param>
-		/// <param name="arg"> Command-line argument </param>
-		/// <returns> True if argument was recognised as a valid help request </returns>
-		static bool PrintHelpIfNecessary(string arg, string appName)
+		static void FindAllFiles()
 		{
-			if (arg.ToLower().Contains("help") || (arg == "-h") || (arg == "/?"))
+			_allFiles.Clear();
+
+			foreach (string file in Directory.GetFiles(_baseDir, _filePattern, SearchOption.AllDirectories))
 			{
-				string helpStr = "Detailed Usage:\n" +
-					$"{appName} <operation> <base-dir> <file-name-pattern>\n" +
-					$"eg. {appName} sort . *.txt\n\n" +
-					"Commands:\n";
-
-				foreach (var handler in _handlers)
-				{
-					helpStr += $"{handler.Command}: {handler.Description}";
-				}
-				Console.WriteLine(helpStr);
-
-				return true;
+				_allFiles.Add(new DirectoryInfo(file));
 			}
+		}
 
-			return false;
+		static void HandleCommand(string[] commands)
+		{
+			string command = commands[0];
+			string[] args = null;
+			if (commands.Length > 0)
+			{
+				args = new string[commands.Length - 1];
+				for (int i = 0; i < args.Length; ++i)
+					args[i] = commands[i + 1];
+			}
+			var handler = _handlers.Find(x => x.Command == command);
+
+			// Special case for help
+			if (command == "help")
+			{
+				if (args is {Length:0 })
+				{
+					foreach (var helpHandler in _handlers)
+						Console.WriteLine($"{helpHandler.Command,-8} - {helpHandler.Description}");
+				}
+				else
+				{
+					var helpHandler = _handlers.Find(x => x.Command == args[0]);
+					Console.WriteLine(helpHandler.Usage ?? helpHandler.Description);
+				}
+			}
+			else
+			{
+				// Execute command if valid
+				if (handler != null)
+					handler.Execute(args, ref _allFiles);
+				else
+					Console.WriteLine($"Invalid command '{command}'. Type \"help\" to see available commands.");
+			}
 		}
 	}
 }
