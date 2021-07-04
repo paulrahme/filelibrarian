@@ -57,6 +57,7 @@ namespace FileNameLibrarian
 			_handlers.Add(new CommandHandler_Status());
 		}
 
+		/// <summary> Scans the directory tree finding all files matching the wildcard pattern </summary>
 		static void FindAllFiles()
 		{
 			_allFiles.Clear();
@@ -67,6 +68,8 @@ namespace FileNameLibrarian
 			}
 		}
 
+		/// <summary> Handles the command by calling the appropriate handler </summary>
+		/// <param name="commands"> Array of strings containing the main command + any additional arguments </param>
 		static void HandleCommand(string[] commands)
 		{
 			string command = commands[0];
@@ -97,7 +100,16 @@ namespace FileNameLibrarian
 			{
 				// Execute command if valid
 				if (handler != null)
-					handler.Execute(args, ref _allFiles);
+				{
+					if (handler.Execute(args, ref _allFiles, out string output))
+						Console.WriteLine(output);
+					else
+					{
+						Console.ForegroundColor = ConsoleColor.Red;
+						Console.WriteLine($"Error: {output}");
+						Console.ResetColor();
+					}
+				}
 				else
 					Console.WriteLine($"Invalid command '{command}'. Type \"help\" to see available commands.");
 			}

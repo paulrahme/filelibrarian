@@ -9,7 +9,8 @@ namespace FileNameLibrarian
 		public override string Command => "status";
 		public override string Description => "Lists status of files.";
 
-		public override void Execute(string[] args, ref List<DirectoryInfo> allFiles)
+		/// <summary> Executes the command (see base class comment for more details) </summary>
+		public override bool Execute(string[] args, ref List<DirectoryInfo> allFiles, out string output)
 		{
 			var uniqueDirs = new List<string>();
 			foreach(var file in allFiles)
@@ -19,7 +20,8 @@ namespace FileNameLibrarian
 					uniqueDirs.Add(dir);
 			}
 
-			Console.WriteLine($"Current list contains '{allFiles.Count}' files in '{uniqueDirs.Count}' directories.");
+			output = $"Current list contains '{allFiles.Count}' files in '{uniqueDirs.Count}' directories.";
+			return true;
 		}
 	}
 }

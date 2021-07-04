@@ -9,9 +9,12 @@ namespace FileNameLibrarian
 		public override string Command => "quit";
 		public override string Description => "Quits back to the command prompt.";
 
-		public override void Execute(string[] args, ref List<DirectoryInfo> allFiles)
+		/// <summary> Executes the command (see base class comment for more details) </summary>
+		public override bool Execute(string[] args, ref List<DirectoryInfo> allFiles, out string output)
 		{
 			Environment.Exit(0);
+			output = string.Empty;
+			return true;
 		}
 	}
 

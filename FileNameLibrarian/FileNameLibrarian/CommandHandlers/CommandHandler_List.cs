@@ -11,10 +11,11 @@ namespace FileNameLibrarian
 		public override string Usage => "\"list\" lists all files to the console.\n\"" +
 										"\"list split\" shows filenames and directories in separate columns.";
 
-		public override void Execute(string[] args, ref List<DirectoryInfo> allFiles)
+		/// <summary> Executes the command (see base class comment for more details) </summary>
+		public override bool Execute(string[] args, ref List<DirectoryInfo> allFiles, out string output)
 		{
 			bool split = (args.Length > 0) && (args[0] == "split");
-			string listStr = string.Empty;
+			output = string.Empty;
 
 			int fileNameColWidth = 0;
 			if (split)
@@ -26,12 +27,12 @@ namespace FileNameLibrarian
 			for (int i = 0; i < allFiles.Count; ++i)
 			{ 
 				if (split)
-					listStr += $"\n{allFiles[i].Name.PadRight(fileNameColWidth)} {allFiles[i].Parent.FullName}";
+					output += $"\n{allFiles[i].Name.PadRight(fileNameColWidth)} {allFiles[i].Parent.FullName}";
 				else
-					listStr += $"\n{allFiles[i].FullName}";
+					output += $"\n{allFiles[i].FullName}";
 			}
 
-			Console.WriteLine(listStr);
+			return true;
 		}
 	}
 }

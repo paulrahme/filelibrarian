@@ -9,6 +9,11 @@ namespace FileNameLibrarian
 		public abstract string Description { get; }
 		public virtual string Usage => null;
 
-		public abstract void Execute(string[] args, ref List<DirectoryInfo> allFiles);
+		/// <summary> Executes the command with the optional specified arguments </summary>
+		/// <param name="args"> Optional additional arguments for this command </param>
+		/// <param name="allFiles"> List of all the files for reading/modifying </param>
+		/// <param name="output"> Output string to get printed to the console after execution </param>
+		/// <returns> True if the command executed successfully, false if there was an error </returns>
+		public abstract bool Execute(string[] args, ref List<DirectoryInfo> allFiles, out string output);
 	}
 }
