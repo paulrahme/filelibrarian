@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31424.327
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileNameLibrarian", "FileNameLibrarian\FileNameLibrarian.csproj", "{2B3EFCB7-4FD8-4D4D-A414-DEE366999462}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileLibrarian", "FileLibrarian\FileLibrarian.csproj", "{2B3EFCB7-4FD8-4D4D-A414-DEE366999462}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

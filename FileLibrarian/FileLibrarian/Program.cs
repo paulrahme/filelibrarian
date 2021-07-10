@@ -3,7 +3,7 @@ using System.Reflection;
 using System.IO;
 using System.Collections.Generic;
 
-namespace FileNameLibrarian
+namespace FileLibrarian
 {
 	class Program
 	{
@@ -19,7 +19,7 @@ namespace FileNameLibrarian
 			var version = ((AssemblyFileVersionAttribute)Attribute.GetCustomAttribute(
 								Assembly.GetExecutingAssembly(),
 								typeof(AssemblyFileVersionAttribute), false)).Version;
-			Console.WriteLine($"File Name Librarian v{version}\n");
+			Console.WriteLine($"File Librarian v{version}\n");
 
 			Console.Write("Base Directory? [.] ");
 			_baseDir = Console.ReadLine();

@@ -1,2 +1,2 @@
-# filenamelibrarian
-Command-line tool for recursive operations on filenames.
+# filelibrarian
+Command-line tool for recursive searching, sorting and grouping operations on files.

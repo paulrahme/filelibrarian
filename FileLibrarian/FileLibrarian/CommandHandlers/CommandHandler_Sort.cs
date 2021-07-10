@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace FileNameLibrarian
+namespace FileLibrarian
 {
 	public class CommandHandler_Sort : CommandHandler
 	{
