@@ -8,7 +8,7 @@ namespace FileLibrarian
 	class Program
 	{
 		static string _baseDir, _filePattern;
-		static List<DirectoryInfo> _allFiles = new();
+		static List<FileInfo> _allFiles = new();
 		static List<CommandHandler> _handlers = new();
 
 		/// <summary> App's main entry + exit point </summary>
@@ -63,7 +63,7 @@ namespace FileLibrarian
 
 			foreach (string file in Directory.GetFiles(_baseDir, _filePattern, SearchOption.AllDirectories))
 			{
-				_allFiles.Add(new DirectoryInfo(file));
+				_allFiles.Add(new FileInfo(file));
 			}
 		}
 
@@ -72,19 +72,17 @@ namespace FileLibrarian
 		static void HandleCommand(string[] commands)
 		{
 			string command = commands[0];
-			string[] args = null;
-			if (commands.Length > 0)
-			{
-				args = new string[commands.Length - 1];
-				for (int i = 0; i < args.Length; ++i)
-					args[i] = commands[i + 1];
-			}
+
+			var args = new List<string>();
+			for (int i = 1; i < commands.Length; ++i)
+				args.Add(commands[i]);
+
 			var handler = _handlers.Find(x => x.Commands.Contains(command));
 
 			// Special case for help
 			if (command == "help")
 			{
-				if (args is {Length:0 })
+				if (args.Count == 0)
 				{
 					foreach (var helpHandler in _handlers)
 					{
@@ -101,7 +99,7 @@ namespace FileLibrarian
 					if (helpHandler != null)
 						Console.WriteLine(helpHandler.Usage ?? helpHandler.Description);
 					else
-						Console.WriteLine($"No help found for {args[0]}.");
+						Console.WriteLine($"No help found for \"{args[0]}\".");
 				}
 			}
 			else

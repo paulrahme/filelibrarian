@@ -10,12 +10,12 @@ namespace FileLibrarian
 		public override string Description => "Lists status of files.";
 
 		/// <summary> Executes the command (see base class comment for more details) </summary>
-		public override bool Execute(string[] args, ref List<DirectoryInfo> allFiles, out string output)
+		public override bool Execute(List<string> args, ref List<FileInfo> allFiles, out string output)
 		{
 			var uniqueDirs = new List<string>();
 			foreach(var file in allFiles)
 			{
-				string dir = file.Parent.FullName;
+				string dir = file.Directory.FullName;
 				if (!uniqueDirs.Contains(dir))
 					uniqueDirs.Add(dir);
 			}

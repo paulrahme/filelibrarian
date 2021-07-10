@@ -11,12 +11,13 @@ namespace FileLibrarian
 		public override string Usage => "sort, sort full - sorts the list by full path (directory+filename).\n" +
 										"sort filename   - sorts the list by filenames (ignoring parent directory name).\n" +
 										"sort dirname    - sorts the list by directory name (ignoring filename).\n" +
-										"sort date       - sorts the list by modified date on each file.";
+										"sort date       - sorts the list by modified date on each file.\n" +
+										"sort size		 - sorts the list by file size.";
 
 		/// <summary> Executes the command (see base class comment for more details) </summary>
-		public override bool Execute(string[] args, ref List<DirectoryInfo> allFiles, out string output)
+		public override bool Execute(List<string> args, ref List<FileInfo> allFiles, out string output)
 		{
-			string sorttype = ((args == null) || (args.Length == 0)) ? "full" : args[0];
+			string sorttype = (args.Count == 0) ? "full" : args[0];
 
 			switch (sorttype)
 			{
@@ -40,30 +41,40 @@ namespace FileLibrarian
 					output = $"Sorted {allFiles.Count} files by modified date.";
 					return true;
 
+				case "size":
+					allFiles.Sort(new Comparer_FileSize());
+					output = $"Sorted {allFiles.Count} files by size.";
+					return true;
+
 				default:
 					output = $"Unhandled sort type \"{sorttype}\".\n{Usage}";
 					return false;
 			}
 		}
 
-		private class Comparer_FullPath : IComparer<DirectoryInfo>
+		private class Comparer_FullPath : IComparer<FileInfo>
 		{
-			public int Compare(DirectoryInfo x, DirectoryInfo y) => string.Compare(x.FullName, y.FullName);
+			public int Compare(FileInfo x, FileInfo y) => string.Compare(x.FullName, y.FullName);
 		}
 
-		private class Comparer_FileName : IComparer<DirectoryInfo>
+		private class Comparer_FileName : IComparer<FileInfo>
 		{
-			public int Compare(DirectoryInfo x, DirectoryInfo y) => string.Compare(x.Name, y.Name);
+			public int Compare(FileInfo x, FileInfo y) => string.Compare(x.Name, y.Name);
 		}
 
-		private class Comparer_DirName : IComparer<DirectoryInfo>
+		private class Comparer_DirName : IComparer<FileInfo>
 		{
-			public int Compare(DirectoryInfo x, DirectoryInfo y) => string.Compare(x.Parent.FullName, y.Parent.FullName);
+			public int Compare(FileInfo x, FileInfo y) => string.Compare(x.Directory.FullName, y.Directory.FullName);
 		}
 
-		private class Comparer_ModifiedTime : IComparer<DirectoryInfo>
+		private class Comparer_ModifiedTime : IComparer<FileInfo>
 		{
-			public int Compare(DirectoryInfo x, DirectoryInfo y) => DateTime.Compare(x.LastWriteTime, y.LastWriteTime);
+			public int Compare(FileInfo x, FileInfo y) => DateTime.Compare(x.LastWriteTime, y.LastWriteTime);
+		}
+
+		private class Comparer_FileSize : IComparer<FileInfo>
+		{
+			public int Compare(FileInfo x, FileInfo y) => x.Length.CompareTo(y.Length);
 		}
 	}
 }
