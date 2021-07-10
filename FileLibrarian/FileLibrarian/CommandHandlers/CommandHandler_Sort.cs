@@ -48,7 +48,7 @@ namespace FileLibrarian
 
 		private class Comparer_FullPath : IComparer<DirectoryInfo>
 		{
-			public int Compare(DirectoryInfo x, DirectoryInfo y) => string.Compare(x.Name, y.Name);
+			public int Compare(DirectoryInfo x, DirectoryInfo y) => string.Compare(x.FullName, y.FullName);
 		}
 
 		private class Comparer_FileName : IComparer<DirectoryInfo>
