@@ -5,7 +5,7 @@ namespace FileLibrarian
 {
 	public abstract class CommandHandler
 	{
-		public abstract string Command { get; }
+		public abstract List<string> Commands { get; }
 		public abstract string Description { get; }
 		public virtual string Usage => null;
 

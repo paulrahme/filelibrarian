@@ -6,7 +6,7 @@ namespace FileLibrarian
 {
 	public class CommandHandler_Status : CommandHandler
 	{
-		public override string Command => "status";
+		public override List<string> Commands => new() { "status" };
 		public override string Description => "Lists status of files.";
 
 		/// <summary> Executes the command (see base class comment for more details) </summary>

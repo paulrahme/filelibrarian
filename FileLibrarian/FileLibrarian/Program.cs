@@ -50,7 +50,6 @@ namespace FileLibrarian
 		/// <summary> Adds handlers for various file tasks </summary>
 		static void AddHandlers()
 		{
-			_handlers.Add(new CommandHandler_Exit());
 			_handlers.Add(new CommandHandler_List());
 			_handlers.Add(new CommandHandler_Quit());
 			_handlers.Add(new CommandHandler_Sort());
@@ -80,7 +79,7 @@ namespace FileLibrarian
 				for (int i = 0; i < args.Length; ++i)
 					args[i] = commands[i + 1];
 			}
-			var handler = _handlers.Find(x => x.Command == command);
+			var handler = _handlers.Find(x => x.Commands.Contains(command));
 
 			// Special case for help
 			if (command == "help")
@@ -88,12 +87,21 @@ namespace FileLibrarian
 				if (args is {Length:0 })
 				{
 					foreach (var helpHandler in _handlers)
-						Console.WriteLine($"{helpHandler.Command,-8} - {helpHandler.Description}");
+					{
+						string allCommands = helpHandler.Commands[0];
+						for (int i = 1; i < helpHandler.Commands.Count; ++i)
+							allCommands += $", { helpHandler.Commands[i]}";
+
+						Console.WriteLine($"{allCommands,-12} - {helpHandler.Description}");
+					}
 				}
 				else
 				{
-					var helpHandler = _handlers.Find(x => x.Command == args[0]);
-					Console.WriteLine(helpHandler.Usage ?? helpHandler.Description);
+					var helpHandler = _handlers.Find(x => x.Commands.Contains(args[0]));
+					if (helpHandler != null)
+						Console.WriteLine(helpHandler.Usage ?? helpHandler.Description);
+					else
+						Console.WriteLine($"No help found for {args[0]}.");
 				}
 			}
 			else

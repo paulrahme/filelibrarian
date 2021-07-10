@@ -6,12 +6,12 @@ namespace FileLibrarian
 {
 	public class CommandHandler_Sort : CommandHandler
 	{
-		public override string Command => "sort";
+		public override List<string> Commands => new() { "sort" };
 		public override string Description => "Sorts all the filenames into a combined sorted list (type\"help sort\" for more options)";
-		public override string Usage => "\"sort\" / \"sort full\" sorts the list by full path (directory+filename).\n" +
-										"\"sort filename\" sorts the list by filenames (ignoring parent directory name).\n" +
-										"\"sort dirname\" sorts the list by directory name (ignoring filename).\n" +
-										"\"sort date\" sorts the list by modified date on each file.";
+		public override string Usage => "sort, sort full - sorts the list by full path (directory+filename).\n" +
+										"sort filename   - sorts the list by filenames (ignoring parent directory name).\n" +
+										"sort dirname    - sorts the list by directory name (ignoring filename).\n" +
+										"sort date       - sorts the list by modified date on each file.";
 
 		/// <summary> Executes the command (see base class comment for more details) </summary>
 		public override bool Execute(string[] args, ref List<DirectoryInfo> allFiles, out string output)

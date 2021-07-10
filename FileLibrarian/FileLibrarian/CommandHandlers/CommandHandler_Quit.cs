@@ -6,7 +6,7 @@ namespace FileLibrarian
 {
 	public class CommandHandler_Quit : CommandHandler
 	{
-		public override string Command => "quit";
+		public override List<string> Commands => new() { "quit", "exit" };
 		public override string Description => "Quits back to the command prompt.";
 
 		/// <summary> Executes the command (see base class comment for more details) </summary>
@@ -16,10 +16,5 @@ namespace FileLibrarian
 			output = string.Empty;
 			return true;
 		}
-	}
-
-	public class CommandHandler_Exit : CommandHandler_Quit
-	{
-		public override string Command => "exit";
 	}
 }

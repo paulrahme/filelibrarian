@@ -6,10 +6,10 @@ namespace FileLibrarian
 {
 	public class CommandHandler_List : CommandHandler
 	{
-		public override string Command => "list";
+		public override List<string> Commands => new() { "list" };
 		public override string Description => "Prints out a list of files, or split columns of files and directories.";
-		public override string Usage => "\"list\" lists all files to the console.\n\"" +
-										"\"list split\" shows filenames and directories in separate columns.";
+		public override string Usage => "list       - lists all files to the console.\n" +
+										"list split - shows filenames and directories in separate columns.";
 
 		/// <summary> Executes the command (see base class comment for more details) </summary>
 		public override bool Execute(string[] args, ref List<DirectoryInfo> allFiles, out string output)
