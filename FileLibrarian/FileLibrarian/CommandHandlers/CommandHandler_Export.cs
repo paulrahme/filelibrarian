@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace FileLibrarian
 {
@@ -11,7 +12,7 @@ namespace FileLibrarian
 		public override string Usage => "Usage: 'export filename.xxx'\n" +
 										"filename's extension can be one of the following formats:\n" +
 										".txt	- text file, columns lined up using spaces (can include additional options from 'list', eg. size, split, etc)\n" +
-										".csv	- comma-separated-value file, for importing into spreadsheets";
+										".csv	- comma-separated-value file, for viewing as / importing into spreadsheets";
 
 		/// <summary> Executes the command (see base class comment for more details) </summary>
 		public override bool Execute(List<string> args, ref List<FileInfo> allFiles, out string output)
@@ -31,8 +32,7 @@ namespace FileLibrarian
 					return true;
 
 				case ".csv":
-					ExportCSV(exportFileInfo.FullName, allFiles);
-					output = $"Wrote file list in csv format to '{exportFileInfo.FullName}'.";
+					ExportCSV(exportFileInfo.FullName, allFiles, out output);
 					return true;
 
 				default:
@@ -41,9 +41,31 @@ namespace FileLibrarian
 			}
 		}
 
-		void ExportCSV(string filename, List<FileInfo> allFiles)
+		/// <summary> Exports details of all files in separate columns in CSV format </summary>
+		/// <param name="filename"> Output .csv file to write </param>
+		/// <param name="allFiles"> List of all files to process </param>
+		void ExportCSV(string filename, List<FileInfo> allFiles, out string output)
 		{
-			File.WriteAllText(filename, "WIP...");
+			Console.Write("Generating CSV...");
+			StringBuilder contents = new StringBuilder("Filename,Size (bytes),Directory,Full Path\n");
+
+			int count = allFiles.Count; // cached for performance
+			for (int i = 0; i < count; ++i)
+			{
+				FileInfo thisFile = allFiles[i];
+				contents.Append("\""); contents.Append(thisFile.Name); contents.Append("\""); contents.Append(",");
+				contents.Append(Utils.Files.GetSizeByType(thisFile, Utils.Files.SizeTypes.Bytes)); contents.Append(",");
+				contents.Append("\""); contents.Append(thisFile.Directory); contents.Append("\""); contents.Append(",");
+				contents.Append("\""); contents.Append(thisFile.FullName); contents.Append("\""); contents.Append("\n");
+
+				if (i << 1 == count)
+					Console.Write("50%...");
+			}
+			Console.WriteLine("done. Writing file...");
+
+			File.WriteAllText(filename, contents.ToString());
+
+			output = $"Wrote {contents.Length} bytes to '{filename}'";
 		}
 	}
 }

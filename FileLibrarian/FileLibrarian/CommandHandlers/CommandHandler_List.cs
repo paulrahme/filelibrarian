@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using FileLibrarian.Utils;
 
 namespace FileLibrarian
 {
 	public class CommandHandler_List : CommandHandler
 	{
-		enum Sizes { None, Bytes, Kilo, Mega, Giga };
-
 		public override List<string> Commands => new() { "list" };
 		public override string Description => "Prints out the list of all files";
 		public override string Usage => "Additional options:\n" +
@@ -29,16 +28,16 @@ namespace FileLibrarian
 			bool split = (args.Contains("split"));
 
 			int sizeArgIdx = args.IndexOf("size");
-			Sizes size = Sizes.None;
+			Files.SizeTypes sizeType = Files.SizeTypes.None;
 			if (sizeArgIdx >= 0)
 			{
 				string sizeTypeArg = (args.Count > sizeArgIdx + 1) ? args[sizeArgIdx + 1] : null;
-				size = sizeTypeArg switch
+				sizeType = sizeTypeArg switch
 				{
-					"gb" => Sizes.Giga,
-					"mb" => Sizes.Mega,
-					"kb" => Sizes.Kilo,
-					_ => Sizes.Bytes
+					"gb" => Files.SizeTypes.Giga,
+					"mb" => Files.SizeTypes.Mega,
+					"kb" => Files.SizeTypes.Kilo,
+					_ => Files.SizeTypes.Bytes
 				};
 			}
 
@@ -53,8 +52,11 @@ namespace FileLibrarian
 			for (int i = 0; i < allFiles.Count; ++i)
 			{
 				var thisFile = allFiles[i];
-				if (size != Sizes.None)
-					output += $"{GetFormattedSize(thisFile, size),11} ";
+				if (sizeType != Files.SizeTypes.None)
+				{
+					string formattedFileSize = string.Format("{0:N0}", Files.GetSizeByType(thisFile, sizeType));
+					output += $"{formattedFileSize,11} ";
+				}
 
 				if (split)
 					output += $"{thisFile.Name.PadRight(fileNameColWidth)} {thisFile.Directory.FullName}\n";
@@ -63,20 +65,6 @@ namespace FileLibrarian
 			}
 
 			return output;
-		}
-
-		static string GetFormattedSize(FileInfo file, Sizes size)
-		{
-			float fileSize = file.Length;
-			fileSize = size switch
-			{
-				Sizes.Kilo => fileSize /= 1024,
-				Sizes.Mega => fileSize /= 1024 * 1024,
-				Sizes.Giga => fileSize /= 1024 * 1024 * 1024,
-				_ => fileSize
-			};
-
-			return string.Format("{0:N0}", fileSize);
 		}
 	}
 }
