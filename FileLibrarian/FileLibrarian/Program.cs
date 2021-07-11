@@ -50,6 +50,7 @@ namespace FileLibrarian
 		/// <summary> Adds handlers for various file tasks </summary>
 		static void AddHandlers()
 		{
+			_handlers.Add(new CommandHandler_Export());
 			_handlers.Add(new CommandHandler_List());
 			_handlers.Add(new CommandHandler_Quit());
 			_handlers.Add(new CommandHandler_Sort());
@@ -90,7 +91,11 @@ namespace FileLibrarian
 						for (int i = 1; i < helpHandler.Commands.Count; ++i)
 							allCommands += $", { helpHandler.Commands[i]}";
 
-						Console.WriteLine($"{allCommands,-12} - {helpHandler.Description}");
+						string helpStr = $"{allCommands,-12} - {helpHandler.Description}";
+						if (helpHandler.Usage != null)
+							helpStr += $" (type 'help {helpHandler.Commands[0]}' for more options)";
+						
+						Console.WriteLine(helpStr);
 					}
 				}
 				else
