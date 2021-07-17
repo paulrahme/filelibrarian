@@ -7,9 +7,23 @@ namespace FileLibrarian
 {
 	class Program
 	{
-		static string _baseDir, _filePattern;
+		/// <summary> All handlers for commands - add any new ones here </summary>
+		static readonly List<CommandHandler> _handlers = new()
+		{
+			new CommandHandler_Export(),
+			new CommandHandler_List(),
+			new CommandHandler_Quit(),
+			new CommandHandler_Sort(),
+			new CommandHandler_Status(),
+		};
+
+		#region Member variables
+
+		static string _baseDir = ".";
+		static string _filePattern = "*.*";
 		static List<FileInfo> _allFiles = new();
-		static List<CommandHandler> _handlers = new();
+
+		#endregion
 
 		/// <summary> App's main entry + exit point </summary>
 		/// <param name="args"> Command-line arguments </param>
@@ -21,15 +35,7 @@ namespace FileLibrarian
 								typeof(AssemblyFileVersionAttribute), false)).Version;
 			Console.WriteLine($"File Librarian v{version}\n");
 
-			Console.Write("Base Directory? [.] ");
-			_baseDir = Console.ReadLine();
-			if (string.IsNullOrEmpty(_baseDir))
-				_baseDir = Directory.GetCurrentDirectory();
-
-			Console.Write("File pattern? [*.*] ");
-			_filePattern = Console.ReadLine();
-
-			AddHandlers();
+			GetBaseDirAndFilePattern(args);
 			FindAllFiles();
 			HandleCommand(new[] { "status" });
 			Console.WriteLine("\nEnter command, or type \"help\" to see a list of commands.");
@@ -47,14 +53,49 @@ namespace FileLibrarian
 			}
 		}
 
-		/// <summary> Adds handlers for various file tasks </summary>
-		static void AddHandlers()
+		/// <summary> Gets the base directory + file pattern to search for </summary>
+		/// <param name="args"> Command-line arguments, if any </param>
+		static void GetBaseDirAndFilePattern(string[] args)
 		{
-			_handlers.Add(new CommandHandler_Export());
-			_handlers.Add(new CommandHandler_List());
-			_handlers.Add(new CommandHandler_Quit());
-			_handlers.Add(new CommandHandler_Sort());
-			_handlers.Add(new CommandHandler_Status());
+			// Base dir passed in as argument?
+			bool dirExists = false;
+			if (args?.Length > 0)
+			{
+				if (Directory.Exists(args[0]))
+				{
+					dirExists = true;
+					_baseDir = args[0];
+					Console.WriteLine($"Using base directory '{_baseDir}' from command-line.");
+				}
+				else
+					Console.WriteLine($"Invalid base directory '{args[0]}' from command-line. \nUsage: {AppDomain.CurrentDomain.FriendlyName} baseDir filePattern\n");
+			}
+
+			// Prompt for base dir
+			while (!dirExists)
+			{
+				Console.Write($"Base Directory? [{_baseDir}] ");
+				string input = Console.ReadLine();
+				if (!string.IsNullOrEmpty(input))
+					_baseDir = input;
+
+				dirExists = Directory.Exists(_baseDir);
+				if (!dirExists)
+					Console.WriteLine($"Directory '{_baseDir}' does not exist.");
+			}
+
+			// File pattern passed in as argument?
+			if (args?.Length > 1)
+			{
+				_filePattern = args[1];
+				Console.WriteLine($"Using file pattern '{_filePattern}' from command-line.");
+			}
+			else
+			{
+				// Prompt for file pattern
+				Console.Write($"File pattern? [{_filePattern}] ");
+				_filePattern = Console.ReadLine();
+			}
 		}
 
 		/// <summary> Scans the directory tree finding all files matching the wildcard pattern </summary>
@@ -62,10 +103,10 @@ namespace FileLibrarian
 		{
 			_allFiles.Clear();
 
-			foreach (string file in Directory.GetFiles(_baseDir, _filePattern, SearchOption.AllDirectories))
-			{
-				_allFiles.Add(new FileInfo(file));
-			}
+			string[] files = Directory.GetFiles(_baseDir, _filePattern, SearchOption.AllDirectories);
+			int count = files.Length;
+			for (int i = 0; i < count; ++i)
+				_allFiles.Add(new FileInfo(files[i]));
 		}
 
 		/// <summary> Handles the command by calling the appropriate handler </summary>
