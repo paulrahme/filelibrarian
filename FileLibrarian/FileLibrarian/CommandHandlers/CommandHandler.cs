@@ -11,9 +11,9 @@ namespace FileLibrarian
 
 		/// <summary> Executes the command with the optional specified arguments </summary>
 		/// <param name="args"> Optional additional arguments for this command </param>
-		/// <param name="allFiles"> List of all the files for reading/modifying </param>
+		/// <param name="allFiles"> List of all the files for processing </param>
 		/// <param name="output"> Output string to get printed to the console after execution </param>
 		/// <returns> True if the command executed successfully, false if there was an error </returns>
-		public abstract bool Execute(List<string> args, ref List<FileInfo> allFiles, out string output);
+		public abstract bool Execute(List<string> args, ref List<FileEntry> allFiles, out string output);
 	}
 }

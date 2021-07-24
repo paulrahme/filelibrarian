@@ -15,7 +15,7 @@ namespace FileLibrarian
 										"sort size       - sorts the list by file size.";
 
 		/// <summary> Executes the command (see base class comment for more details) </summary>
-		public override bool Execute(List<string> args, ref List<FileInfo> allFiles, out string output)
+		public override bool Execute(List<string> args, ref List<FileEntry> allFiles, out string output)
 		{
 			string sorttype = (args.Count == 0) ? "full" : args[0];
 
@@ -52,29 +52,29 @@ namespace FileLibrarian
 			}
 		}
 
-		private class Comparer_FullPath : IComparer<FileInfo>
+		private class Comparer_FullPath : IComparer<FileEntry>
 		{
-			public int Compare(FileInfo x, FileInfo y) => string.Compare(x.FullName, y.FullName);
+			public int Compare(FileEntry x, FileEntry y) => string.Compare(x.FileInfo.FullName, y.FileInfo.FullName);
 		}
 
-		private class Comparer_FileName : IComparer<FileInfo>
+		private class Comparer_FileName : IComparer<FileEntry>
 		{
-			public int Compare(FileInfo x, FileInfo y) => string.Compare(x.Name, y.Name);
+			public int Compare(FileEntry x, FileEntry y) => string.Compare(x.FileInfo.Name, y.FileInfo.Name);
 		}
 
-		private class Comparer_DirName : IComparer<FileInfo>
+		private class Comparer_DirName : IComparer<FileEntry>
 		{
-			public int Compare(FileInfo x, FileInfo y) => string.Compare(x.Directory.FullName, y.Directory.FullName);
+			public int Compare(FileEntry x, FileEntry y) => string.Compare(x.FileInfo.Directory.FullName, y.FileInfo.Directory.FullName);
 		}
 
-		private class Comparer_ModifiedTime : IComparer<FileInfo>
+		private class Comparer_ModifiedTime : IComparer<FileEntry>
 		{
-			public int Compare(FileInfo x, FileInfo y) => DateTime.Compare(x.LastWriteTime, y.LastWriteTime);
+			public int Compare(FileEntry x, FileEntry y) => DateTime.Compare(x.FileInfo.LastWriteTime, y.FileInfo.LastWriteTime);
 		}
 
-		private class Comparer_FileSize : IComparer<FileInfo>
+		private class Comparer_FileSize : IComparer<FileEntry>
 		{
-			public int Compare(FileInfo x, FileInfo y) => x.Length.CompareTo(y.Length);
+			public int Compare(FileEntry x, FileEntry y) => x.FileInfo.Length.CompareTo(y.FileInfo.Length);
 		}
 	}
 }

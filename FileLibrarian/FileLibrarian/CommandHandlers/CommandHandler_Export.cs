@@ -15,7 +15,7 @@ namespace FileLibrarian
 										".csv	- comma-separated-value file, for viewing as / importing into spreadsheets";
 
 		/// <summary> Executes the command (see base class comment for more details) </summary>
-		public override bool Execute(List<string> args, ref List<FileInfo> allFiles, out string output)
+		public override bool Execute(List<string> args, ref List<FileEntry> allFiles, out string output)
 		{
 			if (args.Count == 0)
 			{
@@ -44,7 +44,7 @@ namespace FileLibrarian
 		/// <summary> Exports details of all files in separate columns in CSV format </summary>
 		/// <param name="filename"> Output .csv file to write </param>
 		/// <param name="allFiles"> List of all files to process </param>
-		void ExportCSV(string filename, List<FileInfo> allFiles, out string output)
+		void ExportCSV(string filename, List<FileEntry> allFiles, out string output)
 		{
 			Console.Write("Generating CSV...");
 			StringBuilder contents = new StringBuilder("Filename,Size (bytes),Directory,Full Path\n");
@@ -52,11 +52,11 @@ namespace FileLibrarian
 			int count = allFiles.Count; // cached for performance
 			for (int i = 0; i < count; ++i)
 			{
-				FileInfo thisFile = allFiles[i];
-				contents.Append("\""); contents.Append(thisFile.Name); contents.Append("\""); contents.Append(",");
-				contents.Append(Utils.Files.GetSizeByType(thisFile, Utils.Files.SizeTypes.Bytes)); contents.Append(",");
-				contents.Append("\""); contents.Append(thisFile.Directory); contents.Append("\""); contents.Append(",");
-				contents.Append("\""); contents.Append(thisFile.FullName); contents.Append("\""); contents.Append("\n");
+				var thisFile = allFiles[i];
+				contents.Append("\""); contents.Append(thisFile.FileInfo.Name); contents.Append("\""); contents.Append(",");
+				contents.Append(thisFile.GetSizeByType(FileEntry.SizeTypes.Bytes)); contents.Append(",");
+				contents.Append("\""); contents.Append(thisFile.FileInfo.Directory); contents.Append("\""); contents.Append(",");
+				contents.Append("\""); contents.Append(thisFile.FileInfo.FullName); contents.Append("\""); contents.Append("\n");
 
 				if (i << 1 == count)
 					Console.Write("50%...");

@@ -10,6 +10,7 @@ namespace FileLibrarian
 		/// <summary> All handlers for commands - add any new ones here </summary>
 		static readonly List<CommandHandler> _handlers = new()
 		{
+			new CommandHandler_Compare(),
 			new CommandHandler_Export(),
 			new CommandHandler_List(),
 			new CommandHandler_Quit(),
@@ -21,7 +22,7 @@ namespace FileLibrarian
 
 		static string _baseDir = ".";
 		static string _filePattern = "*.*";
-		static List<FileInfo> _allFiles = new();
+		static List<FileEntry> _allFiles = new();
 
 		#endregion
 
@@ -106,7 +107,7 @@ namespace FileLibrarian
 			string[] files = Directory.GetFiles(_baseDir, _filePattern, SearchOption.AllDirectories);
 			int count = files.Length;
 			for (int i = 0; i < count; ++i)
-				_allFiles.Add(new FileInfo(files[i]));
+				_allFiles.Add(new FileEntry(files[i]));
 		}
 
 		/// <summary> Handles the command by calling the appropriate handler </summary>
