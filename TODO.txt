@@ -1,0 +1,24 @@
+DONE:
+- Basic functionality with command-line arguments
+- Recursive reading in files
+- Sort - by filename / dir name
+- Change to prompt with command driven, implement quit function
+- Help function, list function
+- Sort by date modified, file size
+- Command output / error
+- Improve aliasing (quit/exit, etc) - currently need separate handling
+- Initial export command - txt, csv
+- Compare content across files - match or which lines are different. Also ignore blank lines (esp useful at end of file)
+- Initial filter command - by matched substring in filename, matched content (string) inside file
+
+TODO - Next:
+- Tagging
+- Saving + loading of current file list
+- Saving + loading of query / command sequence (?)
+- Export full comparison result matrix for all files
+- Compare all against 1 specific file (how to specify - full path, or something less prone to human error?)
+
+
+TODO / Ideas for later:
+- Async commands
+- WPF UI

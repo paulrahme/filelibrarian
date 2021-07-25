@@ -12,6 +12,7 @@ namespace FileLibrarian
 		{
 			new CommandHandler_Compare(),
 			new CommandHandler_Export(),
+			new CommandHandler_Filter(),
 			new CommandHandler_List(),
 			new CommandHandler_Quit(),
 			new CommandHandler_Sort(),

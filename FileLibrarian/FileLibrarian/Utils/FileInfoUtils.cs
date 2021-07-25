@@ -163,5 +163,29 @@ namespace FileLibrarian
 		}
 
 		#endregion // Comparing
+
+		#region Filtering
+
+		public bool DoesFilenameContain(string substring, bool ignoreCase = false)
+		{
+			return FileInfo.Name.Contains(substring, ignoreCase ? System.StringComparison.CurrentCultureIgnoreCase : System.StringComparison.CurrentCulture);
+		}
+
+		public bool DoesFileContentContain(string substring, bool ignoreCase = false)
+		{
+			CheckGetContent();
+
+			var culture = ignoreCase ? System.StringComparison.CurrentCultureIgnoreCase : System.StringComparison.CurrentCulture;
+			int count = _content.Length;
+			for (int i = 0; i < count; ++i)
+			{
+				if (_content[i].Contains(substring, culture))
+					return true;
+			}
+
+			return false;
+		}
+
+		#endregion // Filtering
 	}
 }
