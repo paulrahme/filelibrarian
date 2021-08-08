@@ -10,9 +10,9 @@ DONE:
 - Initial export command - txt, csv
 - Compare content across files - match or which lines are different. Also ignore blank lines (esp useful at end of file)
 - Initial filter command - by matched substring in filename, matched content (string) inside file
+- Saving + loading of current file list
 
 TODO - Next:
-- Saving + loading of current file list
 - Tagging
 - Saving + loading of query / command sequence (?)
 - Export full comparison result matrix for all files

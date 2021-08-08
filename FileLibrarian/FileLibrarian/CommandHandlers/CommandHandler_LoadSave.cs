@@ -52,8 +52,52 @@ namespace FileLibrarian
         /// <summary> Executes the command (see base class comment for more details) </summary>
         public override bool Execute(List<string> args, ref List<FileEntry> allFiles, out string output)
         {
-            output = "Not yet implemented!";
-            return false;
+            string saveFolder = LoadSaveCommon.GetSaveFolder();
+            if (!Directory.Exists(saveFolder))
+            {
+                output = "No save files found!";
+                return false;
+            }
+
+            string filename = null;
+            if (args.Count > 0)
+                filename = args[0];
+            else
+            {
+                while (string.IsNullOrEmpty(filename))
+                {
+                    Console.Write("Load name: (? to see all saved lists)");
+                    filename = Console.ReadLine();
+                    if (filename == "?")
+                    {
+                        var allSaves = Directory.GetFiles(saveFolder);
+                        for (int i = 0; i < allSaves.Length; ++i)
+                        {
+                            string[] fileSplit = allSaves[i].Split(Path.DirectorySeparatorChar);
+                            string saveName = fileSplit[fileSplit.Length - 1].Replace(".json", "");
+                            Console.Write($"{saveName,-16}");
+                        }
+                        Console.WriteLine();
+                        filename = null;
+                    }
+                }
+            }
+            string filePath = Path.Combine(saveFolder, filename + ".json");
+            try
+            {
+                Console.WriteLine($"Loading from '{filePath}'...");
+                string jsonContent = File.ReadAllText(filePath);
+                FileEntry.SaveData[] saveDataArray = JsonMapper.ToObject<FileEntry.SaveData[]>(jsonContent);
+                allFiles = LoadSaveCommon.SaveDataArrayToAllFiles(saveDataArray);
+
+                output = $"Successfully loaded {allFiles.Count} file entries from '{filename}'";
+                return true;
+            }
+            catch (Exception e)
+            {
+                output = $"Error loading from '{filePath}':\n{e.Message}";
+                return false;
+            }
         }
     }
 
