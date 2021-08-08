@@ -15,7 +15,7 @@ namespace FileLibrarian
                                         " - blanklines : Compare blank lines (default = ignore/skip empty lines)";
 
         /// <summary> Executes the command (see base class comment for more details) </summary>
-        public override bool Execute(List<string> args, ref List<FileInfoUtils> allFiles, out string output)
+        public override bool Execute(List<string> args, ref List<FileEntry> allFiles, out string output)
         {
             bool ignoreEmptyLines = !args.Contains("blanklines");
             try

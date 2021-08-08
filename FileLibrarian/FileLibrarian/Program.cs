@@ -23,7 +23,7 @@ namespace FileLibrarian
 
         static string _baseDir = ".";
         static string _filePattern = "*.*";
-        static List<FileInfoUtils> _allFiles = new();
+        static List<FileEntry> _allFiles = new();
 
         #endregion
 
@@ -108,7 +108,7 @@ namespace FileLibrarian
             string[] files = Directory.GetFiles(_baseDir, _filePattern, SearchOption.AllDirectories);
             int count = files.Length;
             for (int i = 0; i < count; ++i)
-                _allFiles.Add(new FileInfoUtils(files[i]));
+                _allFiles.Add(new FileEntry(files[i]));
         }
 
         /// <summary> Handles the command by calling the appropriate handler </summary>

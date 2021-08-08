@@ -13,7 +13,7 @@ namespace FileLibrarian
                                         "size [kb|mb|gb]    - display file sizes (in kilo/mega/gigabytes)";
 
         /// <summary> Executes the command (see base class comment for more details) </summary>
-        public override bool Execute(List<string> args, ref List<FileInfoUtils> allFiles, out string output)
+        public override bool Execute(List<string> args, ref List<FileEntry> allFiles, out string output)
         {
             output = GetListOutput(args, allFiles);
             return true;
@@ -21,21 +21,21 @@ namespace FileLibrarian
 
         /// <summary> Generates the listing of all files </summary>
         /// <returns> Text formatted listing </returns>
-        public static string GetListOutput(List<string> args, List<FileInfoUtils> allFiles)
+        public static string GetListOutput(List<string> args, List<FileEntry> allFiles)
         {
             bool split = (args.Contains("split"));
 
             int sizeArgIdx = args.IndexOf("size");
-            FileInfoUtils.SizeTypes sizeType = FileInfoUtils.SizeTypes.None;
+            FileEntry.SizeTypes sizeType = FileEntry.SizeTypes.None;
             if (sizeArgIdx >= 0)
             {
                 string sizeTypeArg = (args.Count > sizeArgIdx + 1) ? args[sizeArgIdx + 1] : null;
                 sizeType = sizeTypeArg switch
                 {
-                    "gb" => FileInfoUtils.SizeTypes.Giga,
-                    "mb" => FileInfoUtils.SizeTypes.Mega,
-                    "kb" => FileInfoUtils.SizeTypes.Kilo,
-                    _ => FileInfoUtils.SizeTypes.Bytes
+                    "gb" => FileEntry.SizeTypes.Giga,
+                    "mb" => FileEntry.SizeTypes.Mega,
+                    "kb" => FileEntry.SizeTypes.Kilo,
+                    _ => FileEntry.SizeTypes.Bytes
                 };
             }
 
@@ -50,7 +50,7 @@ namespace FileLibrarian
             for (int i = 0; i < allFiles.Count; ++i)
             {
                 var thisFile = allFiles[i];
-                if (sizeType != FileInfoUtils.SizeTypes.None)
+                if (sizeType != FileEntry.SizeTypes.None)
                 {
                     string formattedFileSize = string.Format("{0:N0}", thisFile.GetSizeByType(sizeType));
                     output += $"{formattedFileSize,11} ";

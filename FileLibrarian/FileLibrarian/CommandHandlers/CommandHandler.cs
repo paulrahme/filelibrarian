@@ -14,7 +14,7 @@ namespace FileLibrarian
         /// <param name="allFiles"> List of all the files for processing </param>
         /// <param name="output"> Output string to get printed to the console after execution </param>
         /// <returns> True if the command executed successfully, false if there was an error </returns>
-        public abstract bool Execute(List<string> args, ref List<FileInfoUtils> allFiles, out string output);
+        public abstract bool Execute(List<string> args, ref List<FileEntry> allFiles, out string output);
     }
 }
     

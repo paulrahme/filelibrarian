@@ -14,7 +14,7 @@ namespace FileLibrarian
         enum FilterTypes { filename, content };
 
         /// <summary> Executes the command (see base class comment for more details) </summary>
-        public override bool Execute(List<string> args, ref List<FileInfoUtils> allFiles, out string output)
+        public override bool Execute(List<string> args, ref List<FileEntry> allFiles, out string output)
         {
             if (args.Count < 2)
             {
@@ -37,7 +37,7 @@ namespace FileLibrarian
             }
         }
 
-        void Filter(FilterTypes filterType, string stringToMatch, ref List<FileInfoUtils> allFiles)
+        void Filter(FilterTypes filterType, string stringToMatch, ref List<FileEntry> allFiles)
         {
             switch (filterType)
             {

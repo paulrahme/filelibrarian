@@ -3,7 +3,7 @@ using System.IO;
 
 namespace FileLibrarian
 {
-    public class FileInfoUtils
+    public class FileEntry
     {
         public class CompareResult
         {
@@ -27,7 +27,7 @@ namespace FileLibrarian
 
         public FileInfo FileInfo { get; }
         public int LastContentMatchCount { get; private set; }
-        public Dictionary<FileInfoUtils, CompareResult> LastCompareResult { get; } = new Dictionary<FileInfoUtils, CompareResult>();
+        public Dictionary<FileEntry, CompareResult> LastCompareResult { get; } = new Dictionary<FileEntry, CompareResult>();
         public int LastSortPosition { get; set; }
 
         long _size;
@@ -35,7 +35,7 @@ namespace FileLibrarian
         string[] _content;
 
         /// <summary> Constructor </summary>
-        public FileInfoUtils(string fileName)
+        public FileEntry(string fileName)
         {
             FileInfo = new FileInfo(fileName);
         }
@@ -71,7 +71,7 @@ namespace FileLibrarian
 
         #endregion // Tagging
 
-        #region Comparing
+        #region Comparing content
 
         /// <summary> Returns the file's content as a string array, caching as necessary </summary>
         string[] CheckGetContent()
@@ -90,7 +90,7 @@ namespace FileLibrarian
         /// <summary> Compares this file's content with another one </summary>
         /// <param name="ignoreEmptyLines"> True (default) to ignore/skip blank lines </param>
         /// <returns> A text summary of match / differences found </returns>
-        public string CompareWith(FileInfoUtils otherFileEntry, bool ignoreEmptyLines = true)
+        public string CompareWith(FileEntry otherFileEntry, bool ignoreEmptyLines = true)
         {
             // Ensure both files have read their content
             CheckGetContent();
@@ -162,7 +162,7 @@ namespace FileLibrarian
             return (matching ? null : thisLineIdx);
         }
 
-        #endregion // Comparing
+        #endregion // Comparing content
 
         #region Filtering
 
