@@ -187,5 +187,38 @@ namespace FileLibrarian
         }
 
         #endregion // Filtering
+
+        #region Save/Load serialization
+
+        [System.Serializable]
+        public class SaveData
+        {
+            public string FileName = null;
+            public List<string> Tags = new();
+            public string[] Content;
+        }
+
+        /// <summary> Creates & returns SaveData for this FileEntry </summary>
+        public SaveData CreateSaveData()
+        {
+            return new SaveData
+            {
+                FileName = FileInfo.FullName,
+                Tags = _tags,
+                Content = _content
+            };
+        }
+
+        /// <summary> Creates & returns a FileEntry from SaveData </summary>
+        public static FileEntry CreateFromSaveData(SaveData saveData)
+        {
+            return new FileEntry(saveData.FileName)
+            {
+                _tags = saveData.Tags,
+                _content = saveData.Content
+            };
+        }
+
+        #endregion // Save/Load serialization
     }
 }

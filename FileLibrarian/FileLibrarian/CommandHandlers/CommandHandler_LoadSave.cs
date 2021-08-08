@@ -2,20 +2,42 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Reflection;
+using LitJson;
 
 namespace FileLibrarian
 {
     public class LoadSaveCommon
     {
+        /// <summary> Returns the directory for saving/loading </summary>
         public static string GetSaveFolder()
         {
-            string asmName = ((AssemblyProductAttribute)Attribute.GetCustomAttribute(
+            string productName = ((AssemblyProductAttribute)Attribute.GetCustomAttribute(
                 Assembly.GetExecutingAssembly(), typeof(AssemblyProductAttribute), false)).Product;
 
             string saveFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            saveFolder = Path.Combine(saveFolder, asmName);
+            saveFolder = Path.Combine(saveFolder, productName);
 
             return saveFolder;
+        }
+
+        /// <summary> Converts List of FileEntries into an array of (serializable) SaveData </summary>
+        public static FileEntry.SaveData[] AllFilesToSaveDataArray(List<FileEntry> allFiles)
+        {
+            FileEntry.SaveData[] saveDataArray = new FileEntry.SaveData[allFiles.Count];
+            for (int i = 0; i < saveDataArray.Length; ++i)
+                saveDataArray[i] = allFiles[i].CreateSaveData();
+
+            return saveDataArray;
+        }
+
+        /// <summary> Converts an array of (serializable) SaveData into a List of FileEntries </summary>
+        public static List<FileEntry> SaveDataArrayToAllFiles(FileEntry.SaveData[] saveDataArray)
+        {
+            List<FileEntry> allFiles = new List<FileEntry>();
+            for (int i = 0; i < saveDataArray.Length; ++i)
+                allFiles.Add(FileEntry.CreateFromSaveData(saveDataArray[i]));
+
+            return allFiles;
         }
     }
 
@@ -78,9 +100,12 @@ namespace FileLibrarian
                 }
             }
 
+            var saveDataArray = LoadSaveCommon.AllFilesToSaveDataArray(allFiles);
+            string jsonContent = JsonMapper.ToJson(saveDataArray);
+
             try
             {
-                File.WriteAllText(filePath, "blah"); // TODO: replace with allFiles -> json
+                File.WriteAllText(filePath, jsonContent);
                 output = $"Saved {allFiles.Count} file entries to '{filePath}'";
                 return true;
             }
