@@ -12,8 +12,8 @@ DONE:
 - Initial filter command - by matched substring in filename, matched content (string) inside file
 
 TODO - Next:
-- Tagging
 - Saving + loading of current file list
+- Tagging
 - Saving + loading of query / command sequence (?)
 - Export full comparison result matrix for all files
 - Compare all against 1 specific file (how to specify - full path, or something less prone to human error?)
