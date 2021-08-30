@@ -21,6 +21,7 @@ namespace FileLibrarian
             new CommandHandler_Quit(),
             new CommandHandler_Sort(),
             new CommandHandler_Status(),
+            new CommandHandler_Undo(),
         };
 
         #region Member variables
