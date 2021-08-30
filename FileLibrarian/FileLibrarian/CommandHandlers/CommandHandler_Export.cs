@@ -15,12 +15,12 @@ namespace FileLibrarian
                                         ".csv	- comma-separated-value file, for viewing as / importing into spreadsheets";
 
         /// <summary> Executes the command (see base class comment for more details) </summary>
-        public override bool Execute(List<string> args, ref List<FileEntry> allFiles, out string output)
+        public override CommandResults Execute(List<string> args, ref List<FileEntry> allFiles, List<CommandData> commandHistory, out string output)
         {
             if (args.Count == 0)
             {
                 output = Usage;
-                return false;
+                return CommandResults.Failure;
             }
 
             var exportFileInfo = new FileInfo(args[0]);
@@ -29,15 +29,15 @@ namespace FileLibrarian
                 case ".txt":
                     File.WriteAllText(exportFileInfo.FullName, CommandHandler_List.GetListOutput(args, allFiles));
                     output = $"Wrote file list in text format to '{exportFileInfo.FullName}'.";
-                    return true;
+                    return CommandResults.Success;
 
                 case ".csv":
                     ExportCSV(exportFileInfo.FullName, allFiles, out output);
-                    return true;
+                    return CommandResults.Success;
 
                 default:
                     output = $"Unhandled/invalid file extension '{exportFileInfo.Extension}'.\nSee help for supported output formats.";
-                    return false;
+                    return CommandResults.Failure;
             }
         }
 

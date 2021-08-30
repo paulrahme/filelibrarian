@@ -8,7 +8,7 @@ namespace FileLibrarian
         public override string Description => "Lists status of files.";
 
         /// <summary> Executes the command (see base class comment for more details) </summary>
-        public override bool Execute(List<string> args, ref List<FileEntry> allFiles, out string output)
+        public override CommandResults Execute(List<string> args, ref List<FileEntry> allFiles, List<CommandData> commandHistory, out string output)
         {
             var uniqueDirs = new List<string>();
             foreach (var file in allFiles)
@@ -19,7 +19,7 @@ namespace FileLibrarian
             }
 
             output = $"Current list contains '{allFiles.Count}' files in '{uniqueDirs.Count}' directories.";
-            return true;
+            return CommandResults.Success;
         }
     }
 }

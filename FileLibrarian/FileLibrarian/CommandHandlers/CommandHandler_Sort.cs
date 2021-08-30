@@ -15,7 +15,7 @@ namespace FileLibrarian
                                         "sort size       - sorts the list by file size.";
 
         /// <summary> Executes the command (see base class comment for more details) </summary>
-        public override bool Execute(List<string> args, ref List<FileEntry> allFiles, out string output)
+        public override CommandResults Execute(List<string> args, ref List<FileEntry> allFiles, List<CommandData> commandHistory, out string output)
         {
             string sorttype = (args.Count == 0) ? "full" : args[0];
 
@@ -24,31 +24,31 @@ namespace FileLibrarian
                 case "full":
                     allFiles.Sort(new Comparer_FullPath());
                     output = $"Sorted {allFiles.Count} files by full path.";
-                    return true;
+                    return CommandResults.Success | CommandResults.SaveUndoStep;
 
                 case "filename":
                     allFiles.Sort(new Comparer_FileName());
                     output = $"Sorted {allFiles.Count} files by filename.";
-                    return true;
+                    return CommandResults.Success | CommandResults.SaveUndoStep;
 
                 case "dirname":
                     allFiles.Sort(new Comparer_DirName());
                     output = $"Sorted {allFiles.Count} files by directory name.";
-                    return true;
+                    return CommandResults.Success | CommandResults.SaveUndoStep;
 
                 case "date":
                     allFiles.Sort(new Comparer_ModifiedTime());
                     output = $"Sorted {allFiles.Count} files by modified date.";
-                    return true;
+                    return CommandResults.Success | CommandResults.SaveUndoStep;
 
                 case "size":
                     allFiles.Sort(new Comparer_FileSize());
                     output = $"Sorted {allFiles.Count} files by size.";
-                    return true;
+                    return CommandResults.Success | CommandResults.SaveUndoStep;
 
                 default:
                     output = $"Unhandled sort type \"{sorttype}\".\n{Usage}";
-                    return false;
+                    return CommandResults.Failure;
             }
         }
 

@@ -15,7 +15,7 @@ namespace FileLibrarian
                                         " - blanklines : Compare blank lines (default = ignore/skip empty lines)";
 
         /// <summary> Executes the command (see base class comment for more details) </summary>
-        public override bool Execute(List<string> args, ref List<FileEntry> allFiles, out string output)
+        public override CommandResults Execute(List<string> args, ref List<FileEntry> allFiles, List<CommandData> commandHistory, out string output)
         {
             bool ignoreEmptyLines = !args.Contains("blanklines");
             try
@@ -31,12 +31,12 @@ namespace FileLibrarian
                 }
 
                 output = $"Compare all files complete.";
-                return true;
+                return CommandResults.Success;
             }
             catch (Exception e)
             {
                 output = $"Error during compare: '{e.Message}'";
-                return false;
+                return CommandResults.Failure;
             }
         }
     }

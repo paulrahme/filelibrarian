@@ -9,11 +9,11 @@ namespace FileLibrarian
         public override string Description => "Quits back to the command prompt.";
 
         /// <summary> Executes the command (see base class comment for more details) </summary>
-        public override bool Execute(List<string> args, ref List<FileEntry> allFiles, out string output)
+        public override CommandResults Execute(List<string> args, ref List<FileEntry> allFiles, List<CommandData> commandHistory, out string output)
         {
             Environment.Exit(0);
             output = string.Empty;
-            return true;
+            return CommandResults.Success;
         }
     }
 }

@@ -13,10 +13,10 @@ namespace FileLibrarian
                                         "size [kb|mb|gb]    - display file sizes (in kilo/mega/gigabytes)";
 
         /// <summary> Executes the command (see base class comment for more details) </summary>
-        public override bool Execute(List<string> args, ref List<FileEntry> allFiles, out string output)
+        public override CommandResults Execute(List<string> args, ref List<FileEntry> allFiles, List<CommandData> commandHistory, out string output)
         {
             output = GetListOutput(args, allFiles);
-            return true;
+            return CommandResults.Success;
         }
 
         /// <summary> Generates the listing of all files </summary>

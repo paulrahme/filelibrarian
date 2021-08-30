@@ -50,13 +50,13 @@ namespace FileLibrarian
                                         "load filename - Loada a list of saved file entries.";
 
         /// <summary> Executes the command (see base class comment for more details) </summary>
-        public override bool Execute(List<string> args, ref List<FileEntry> allFiles, out string output)
+        public override CommandResults Execute(List<string> args, ref List<FileEntry> allFiles, List<CommandData> commandHistory, out string output)
         {
             string saveFolder = LoadSaveCommon.GetSaveFolder();
             if (!Directory.Exists(saveFolder))
             {
                 output = "No save files found!";
-                return false;
+                return CommandResults.Failure;
             }
 
             string filename = null;
@@ -91,12 +91,12 @@ namespace FileLibrarian
                 allFiles = LoadSaveCommon.SaveDataArrayToAllFiles(saveDataArray);
 
                 output = $"Successfully loaded {allFiles.Count} file entries from '{filename}'";
-                return true;
+                return CommandResults.Success | CommandResults.SaveUndoStep;
             }
             catch (Exception e)
             {
                 output = $"Error loading from '{filePath}':\n{e.Message}";
-                return false;
+                return CommandResults.Failure;
             }
         }
     }
@@ -112,7 +112,7 @@ namespace FileLibrarian
         string _lastSaveName = null;
 
         /// <summary> Executes the command (see base class comment for more details) </summary>
-        public override bool Execute(List<string> args, ref List<FileEntry> allFiles, out string output)
+        public override CommandResults Execute(List<string> args, ref List<FileEntry> allFiles, List<CommandData> commandHistory, out string output)
         {
             string saveFolder = LoadSaveCommon.GetSaveFolder();
             if (!Directory.Exists(saveFolder))
@@ -151,12 +151,12 @@ namespace FileLibrarian
             {
                 File.WriteAllText(filePath, jsonContent);
                 output = $"Saved {allFiles.Count} file entries to '{filePath}'";
-                return true;
+                return CommandResults.Success;
             }
             catch (Exception e)
             {
                 output = $"Error writing to '{filePath}':\n{e.Message}";
-                return false;
+                return CommandResults.Failure;
             }
         }
     }

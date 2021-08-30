@@ -12,7 +12,7 @@ namespace FileLibrarian
                                         " - Note: By default, this overwrites the file list. If 'append' is specified, it will add to the existing list.";
 
         /// <summary> Executes the command (see base class comment for more details) </summary>
-        public override bool Execute(List<string> args, ref List<FileEntry> allFiles, out string output)
+        public override CommandResults Execute(List<string> args, ref List<FileEntry> allFiles, List<CommandData> commandHistory, out string output)
         {
             bool append = args.Contains("append");
             if (append)
@@ -21,7 +21,7 @@ namespace FileLibrarian
             if (args.Count < 2)
             {
                 output = Usage;
-                return false;
+                return CommandResults.Failure;
             }
 
             string baseDir = args[0];
@@ -30,7 +30,7 @@ namespace FileLibrarian
             if (!Directory.Exists(baseDir))
             {
                 output = $"Could not find base directory '{baseDir}'.";
-                return false;
+                return CommandResults.Failure;
             }
 
             if (!append)
@@ -44,7 +44,7 @@ namespace FileLibrarian
             output = $"Found {files.Length} files matching pattern '{filePattern}' under base directory '{baseDir}'.";
             if (append)
                 output += $"\nAppended to existing list, total now = {allFiles.Count}.";
-            return true;
+            return CommandResults.Success | CommandResults.SaveUndoStep;
         }
     }
 }

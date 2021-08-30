@@ -14,12 +14,12 @@ namespace FileLibrarian
         enum FilterTypes { filename, content };
 
         /// <summary> Executes the command (see base class comment for more details) </summary>
-        public override bool Execute(List<string> args, ref List<FileEntry> allFiles, out string output)
+        public override CommandResults Execute(List<string> args, ref List<FileEntry> allFiles, List<CommandData> commandHistory, out string output)
         {
             if (args.Count < 2)
             {
                 output = Usage;
-                return false;
+                return CommandResults.Failure;
             }
 
             if (Enum.TryParse(args[0], out FilterTypes filterType))
@@ -28,12 +28,12 @@ namespace FileLibrarian
                 output = $"Filtered total files in list from {allFiles.Count} to ";
                 Filter(filterType, args[1], ref allFiles);
                 output += $"{allFiles.Count}.";
-                return true;
+                return CommandResults.Success | CommandResults.SaveUndoStep;
             }
             else
             {
                 output = $"Unhandled/invalid Filter Type'{args[0]}'.\nSee help for supported types.";
-                return false;
+                return CommandResults.Failure;
             }
         }
 
