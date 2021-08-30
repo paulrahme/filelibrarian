@@ -13,6 +13,7 @@ DONE:
 - Saving + loading of current file list
 
 TODO - Next:
+- History + reverse steps
 - Tagging
 - Saving + loading of query / command sequence (?)
 - Export full comparison result matrix for all files
@@ -20,5 +21,6 @@ TODO - Next:
 
 
 TODO / Ideas for later:
+- Unit tests
 - Async commands
 - WPF UI

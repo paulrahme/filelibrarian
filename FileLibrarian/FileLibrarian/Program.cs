@@ -13,6 +13,8 @@ namespace FileLibrarian
             new CommandHandler_Compare(),
             new CommandHandler_Export(),
             new CommandHandler_Filter(),
+            new CommandHandler_FindFiles(),
+            new CommandHandler_History(),
             new CommandHandler_Load(),
             new CommandHandler_Save(),
             new CommandHandler_List(),
@@ -21,11 +23,28 @@ namespace FileLibrarian
             new CommandHandler_Status(),
         };
 
+        /// <summary> Data structure for 1 item in the command history </summary>
+        struct CommandData
+        {
+            public string Command;
+            public string[] Args;
+            public List<FileEntry> AllFiles;
+
+            /// <summary> Constructor </summary>
+            public CommandData(string command, string[] args, List<FileEntry> allFiles)
+            {
+                Command = command;
+                Args = args;
+                AllFiles = allFiles;
+            }
+        }
+
         #region Member variables
 
         static string _baseDir = ".";
         static string _filePattern = "*.*";
         static List<FileEntry> _allFiles = new();
+        static Stack<CommandData> _commandHistory = new();
 
         #endregion
 
@@ -40,7 +59,7 @@ namespace FileLibrarian
             Console.WriteLine($"File Librarian v{version}\n");
 
             GetBaseDirAndFilePattern(args);
-            FindAllFiles();
+            HandleCommand(new[] { "findfiles", _baseDir, _filePattern });
             HandleCommand(new[] { "status" });
             Console.WriteLine("\nEnter command, or type \"help\" to see a list of commands.");
 
@@ -102,17 +121,6 @@ namespace FileLibrarian
             }
         }
 
-        /// <summary> Scans the directory tree finding all files matching the wildcard pattern </summary>
-        static void FindAllFiles()
-        {
-            _allFiles.Clear();
-
-            string[] files = Directory.GetFiles(_baseDir, _filePattern, SearchOption.AllDirectories);
-            int count = files.Length;
-            for (int i = 0; i < count; ++i)
-                _allFiles.Add(new FileEntry(files[i]));
-        }
-
         /// <summary> Handles the command by calling the appropriate handler </summary>
         /// <param name="commands"> Array of strings containing the main command + any additional arguments </param>
         static void HandleCommand(string[] commands)
@@ -157,8 +165,16 @@ namespace FileLibrarian
                 // Execute command if valid
                 if (handler != null)
                 {
+                    var prevAllFiles = new List<FileEntry>(_allFiles);
+
                     if (handler.Execute(args, ref _allFiles, out string output))
+                    {
                         Console.WriteLine(output);
+
+                        // Save history if file list was modified (NOTE: only compares list length, may need impoving in future)
+                        if (_allFiles.Count != prevAllFiles.Count)
+                            _commandHistory.Push(new CommandData(command, args.ToArray(), prevAllFiles));
+                    }
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
