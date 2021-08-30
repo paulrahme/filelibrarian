@@ -7,19 +7,19 @@ namespace FileLibrarian
     {
         public class CompareResult
         {
-            public long _sizeCountDiff;
-            public int _lineCountDiff;
-            public int? _differentLineStart, _differentLineEnd;
+            public long SizeCountDiff;
+            public int LineCountDiff;
+            public int? DifferentLineStart, DifferentLineEnd;
 
             public string GetSummary()
             {
-                if ((_sizeCountDiff == 0) && (_differentLineStart == null) && (_differentLineEnd == null))
+                if ((SizeCountDiff == 0) && (DifferentLineStart == null) && (DifferentLineEnd == null))
                     return "MATCH - Files identical.";
 
-                if ((_differentLineStart == null) && (_differentLineEnd == null))
-                    return $"CONTENT MATCH - file sizes differ. Size diff = {_sizeCountDiff}, Line diff = {_lineCountDiff}";
+                if ((DifferentLineStart == null) && (DifferentLineEnd == null))
+                    return $"CONTENT MATCH - file sizes differ. Size diff = {SizeCountDiff}, Line diff = {LineCountDiff}";
 
-                return $"DIFFERENT - First different line from start = {_differentLineStart + 1}, Last different line from end = {_differentLineEnd + 1}";
+                return $"DIFFERENT - First different line from start = {DifferentLineStart + 1}, Last different line from end = {DifferentLineEnd + 1}";
             }
         }
 
@@ -98,16 +98,16 @@ namespace FileLibrarian
 
             var compareResult = new CompareResult
             {
-                _sizeCountDiff = FileInfo.Length - otherFileEntry.FileInfo.Length,
-                _lineCountDiff = _content.Length - otherContent.Length
+                SizeCountDiff = FileInfo.Length - otherFileEntry.FileInfo.Length,
+                LineCountDiff = _content.Length - otherContent.Length
             };
 
-            compareResult._differentLineStart = CheckMatchingLines(_content, otherContent, fromStart: true, ignoreEmptyLines);
+            compareResult.DifferentLineStart = CheckMatchingLines(_content, otherContent, fromStart: true, ignoreEmptyLines);
 
-            if (compareResult._differentLineStart == null) // Matched all the way through
-                compareResult._differentLineEnd = null;
+            if (compareResult.DifferentLineStart == null) // Matched all the way through
+                compareResult.DifferentLineEnd = null;
             else // Also compare from the end working back
-                compareResult._differentLineEnd = CheckMatchingLines(_content, otherContent, fromStart: false, ignoreEmptyLines);
+                compareResult.DifferentLineEnd = CheckMatchingLines(_content, otherContent, fromStart: false, ignoreEmptyLines);
 
             LastCompareResult[otherFileEntry] = compareResult;
 
